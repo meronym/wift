@@ -1,0 +1,108 @@
+# TODO: check out http://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html
+
+- hosts: all
+  become: false
+
+  vars:
+    root_dir: /srv/wift
+    root_site: wift.local
+
+  tasks:
+    - name: Add pipenv repository
+      become: true
+      apt_repository: repo='ppa:pypa/ppa' state=present
+
+    - name: Install core packages
+      become: true
+      apt: update_cache=yes name={{ item }} state=present
+      with_items:
+        - software-properties-common
+        - python-software-properties
+        - pipenv
+    
+    - name: Install dev utilities        
+      become: true
+      apt: update_cache=yes name={{ item }} state=present
+      with_items:
+        - htop
+        - git
+        - vim
+        - nginx
+
+    - name: Create wift root directory
+      become: true
+      file:
+        path: '{{ root_dir }}'
+        owner: vagrant
+        group: www-data
+        state: directory
+        mode: 0755
+
+    - name: Link code repositories
+      file:
+        src: '/vagrant/{{ item }}'
+        dest: '{{ root_dir }}/{{ item }}'
+        state: link
+      with_items:
+        - wift-api
+        - wift-checkout
+        - wift-landing
+        - wift-store
+
+    - name: Disable the default site
+      become: true
+      file:
+        path: "/etc/nginx/sites-enabled/default"
+        state: absent
+      notify: reload nginx
+
+    - name: Setup Nginx configs files
+      become: true
+      template:
+        src: 'nginx/{{ item }}'
+        dest: '/etc/nginx/sites-available/{{ item }}'
+      with_items:
+        - wift-api.conf
+        - wift-checkout.conf
+        - wift-landing.conf
+        - wift-store.conf
+      notify: reload nginx
+
+    - name: Enable Nginx sites
+      become: true
+      file:
+        src: '/etc/nginx/sites-available/{{ item }}'
+        dest: '/etc/nginx/sites-enabled/{{ item }}'
+        state: link
+      with_items:
+        - wift-api.conf
+        - wift-landing.conf
+        - wift-checkout.conf
+        - wift-store.conf
+      notify: reload nginx
+
+    - name: Add enabled Nginx sites to /etc/hosts
+      become: true
+      lineinfile:
+        dest: /etc/hosts
+        line: '127.0.0.1 {{ item }}'
+        state: present
+      with_items:
+        - '{{ root_site }}'
+        - 'www.{{ root_site }}'
+        - 'checkout.{{ root_site }}'
+        - 'api.{{ root_site }}'
+        - 'store.{{ root_site }}'
+
+    - name: Install wift-api requirements
+      command: pipenv install chdir={{ root_dir }}/wift-api
+
+    - name: Install wift-store requirements
+      command: pipenv install chdir={{ root_dir }}/wift-store
+
+  handlers:
+    - name: reload nginx
+      become: true
+      service:
+        name: nginx
+        state: reloaded

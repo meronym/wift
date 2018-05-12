@@ -1,0 +1,66 @@
+body {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+main {
+  width: 300px;
+  height: 340px;
+  margin: auto;
+  background: #E8E9EB;
+  box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.5), inset 0px 1px 0px rgba(255, 255, 255, 0.65);
+  border-radius: 6px;
+}
+.name {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: bold;
+  line-height: normal;
+  font-size: 17px;
+  text-align: center;
+  color: #000000;
+  text-shadow: 0px 1px 0px #FFFFFF;
+  margin-bottom: 0px;
+}
+.description {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  font-size: 13px;
+  text-align: center;
+  color: #5B5B65;
+  text-shadow: 0px 1px 0px #FFFFFF;
+  margin-top: 0px;
+}
+.wift-app-close {
+  display: block;
+  margin: auto;
+  margin-top: 20px;
+}
+.pay-button {
+  width: 228px;
+  height: 37px;
+  margin: auto;
+  background: linear-gradient(180deg, #F6C12D 0%, #F4AF29 100%);
+  font-size: 14px;
+  color: #fff;
+  font-weight: bold;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+  overflow: hidden;
+  display: block;
+  visibility: visible !important;
+  border: 0;
+  padding: 1px;
+  text-decoration: none;
+  border-radius: 5px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25);
+  cursor: pointer;
+}
+
+.screen-address {
+  display: none;
+}
+
+.screen-confirmed {
+  display: none;
+}

@@ -1,0 +1,47 @@
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" type="text/css" href="app.css" />
+</head>
+
+<body>
+  <main>
+    <div header>
+      <button class="wift-app-close">Close</button>
+      <h1 class="name"></h1>
+      <h2 class="description"></h2>
+    </div>
+
+    <div class="screen-welcome">
+      <form>
+        <fieldset id="radios">
+          <label for="pay_eth">
+            <input type="radio" name="currency" id="pay_eth" value="ETH" />
+            <span>ETH</span>
+          </label>                
+          <label for="pay_dai">
+            <input type="radio" name="currency" id="pay_dai" value="DAI" checked/>
+            <span>DAI</span>
+          </label>
+        </fieldset>
+        <button class="pay-button" type="submit"></button>
+      </form>
+    </div>
+    
+    <div class="screen-address">
+      <p>Awaiting payment...</p>
+      <p>1.01234 DAI</p>
+      <p>test_0xc257274276a4e539741ca1...</p>
+      <a href="#">Open Wallet</a>
+      <a href="#">Scan QR</a>
+    </div>
+
+    <div class="screen-confirmed">
+      <p>We successfully received your DAI. Thanks for your payment.</p>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
