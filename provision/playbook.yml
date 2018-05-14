@@ -94,11 +94,46 @@
         - 'api.{{ root_site }}'
         - 'store.{{ root_site }}'
 
-    - name: Install wift-api requirements
-      command: pipenv install chdir={{ root_dir }}/wift-api
+    # MongoDB section
+    - name: Add MongoDB public GPG key
+      become: true
+      apt_key:
+        keyserver: hkp://keyserver.ubuntu.com:80
+        id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    
+    - name: Add MongoDB stable repository
+      become: true
+      apt_repository:
+        repo: 'deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse'
+        state: present
 
-    - name: Install wift-store requirements
-      command: pipenv install chdir={{ root_dir }}/wift-store
+    - name: Install MongoDB
+      become: true
+      apt: update_cache=yes name=mongodb-org state=present
+
+    - name: Start MongoDB and enable automatic launch at system start
+      become: true
+      service: name=mongod state=started enabled=yes
+
+    # Redis section
+    - name: Install Redis
+      become: true
+      apt: name=redis-server state=present
+
+    # - name: Set default locale to utf8 (prevents pipenv from being a bitch)
+    #   become: true
+    #   template:
+    #     src: locale.j2
+    #     dest: /etc/default/locale
+    #     owner: root
+    #     group: root
+    #     mode: 0644
+
+    # - name: Install wift-api requirements
+    #   command: pipenv install chdir={{ root_dir }}/wift-api
+
+    # - name: Install wift-store requirements
+    #   command: pipenv install chdir={{ root_dir }}/wift-store
 
   handlers:
     - name: reload nginx
