@@ -1,1 +1,135 @@
-<h1>Welcome to Wift!</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Wift Payments</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      WebFont.load({
+        google: {
+          families: ["Roboto:100,200,300,400,500"]
+        }
+      });
+    </script>
+    <link href="main.css" rel="stylesheet" type="text/css" />
+  </head>
+  
+  <body class="body">
+    <div class="wrapper">
+      <div class="menu">
+        <a class="logo" href="#">wift</a>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Docs</a>
+        <a class="dashboard" href="#">Dashboard &raquo;</a>
+      </div>
+
+      <div class="hero">
+        <h1>Payments for everyone else</h1>
+        <h2>
+          Accept 
+            <span class="explain explain-fiat">
+              <span class="topic">fiat-denominated</span>
+              <span class="tooltip">
+                <span class="tooltip-text">
+                  Powered by <a href="https://makerdao.com/">DAI</a> <br/>
+                  a decentralized stable coin
+                </span>
+              </span>
+            </span>
+            <span class="explain explain-crypto">
+              <span class="topic">crypto payments</span>
+              <span class="tooltip">
+                <span class="tooltip-text">
+                  Powered by <a href="https://ethereum.org/">Ethereum</a> <br/>
+                  a decentralized blockchain
+                </span>
+              </span>
+            </span>
+          on your website today.
+          <br />
+            Works globally, no registration or bank account required.
+        </h2>
+        <div class="cta-wrapper">
+          <div class="cta">
+            <div class="cta-primary">
+              <button>New Access Key</button>
+            </div>
+            <div class="cta-secondary">
+              <button>Go to Dashboard &raquo;</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="console">
+        <div class="console-header">
+          <ul class="language-toggle">
+            <li>
+              <input name="language-toggle" id="lang-html" type="radio" checked>
+              <label for="lang-html">HTML</label>
+              <hr />
+            </li>
+            <li>
+              <input name="language-toggle" id="lang-js" type="radio">
+              <label for="lang-js">Javascript</label>
+              <hr />
+            </li>
+            <li>
+              <input name="language-toggle" id="lang-python" type="radio">
+              <label for="lang-python">Python</label>
+              <hr />
+            </li>
+          </ul>
+          <div class="console-cta">
+            <a class="live-demo" href="http://store.wift.local/"><span>Live Demo</span></a>
+          </div>
+        </div>
+        <ul class="console-code">
+          <li>
+            <pre data-lang="lang-html" class="hidden">
+              <span class="code-comment">&lt;!-- Add this code to your HTML page source --&gt;</span>
+              &lt;<span class="code-keyword">form</span> <span class="code-variable">action</span>=<span class="code-string">"/charge"</span> <span class="code-variable">method</span>=<span class="code-string">"POST"</span>&gt;
+              &nbsp;&nbsp;&lt;<span class="code-keyword">script</span> <span class="code-variable">src</span>=<span class="code-string">"http://checkout.wift.io/checkout.js"</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">class</span>=<span class="code-string">"wift-button"</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">data-key</span>=<span class="code-string">"pk_test_6pRNASCoBOKtIshFeQd4XMUh"</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">data-name</span>=<span class="code-string">"Wift.io"</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">data-description</span>=<span class="code-string">"Donation Widget"</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">data-amount</span>=<span class="code-string">"199"</span>&gt;
+              &nbsp;&nbsp;&lt;<span class="code-keyword">/script</span>&gt;
+              &lt;<span class="code-keyword">/form</span>&gt;
+            </pre>
+          </li>
+          <li>
+            <pre data-lang="lang-js" class="hidden">
+              <span class="code-comment">// Require the Wift library with a test secret key.</span>
+              <span class="code-keyword">const</span> wift = require(<span class="code-string">'wift'</span>)(<span class="code-string">'sk_test_BQokikJOvBiI2HlWgH4olfQ2'</span>);
+
+              <span class="code-comment">// Create a payment from a test card token.</span>
+              <span class="code-keyword">const</span> charge = <span class="code-keyword">await</span> wift.charges.create({
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">amount</span>: 2000,
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">currency</span>: <span class="code-string">'usd'</span>,
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">source</span>: <span class="code-string">'tok_visa'</span>,
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">description</span>: <span class="code-string">'My first payment'</span>
+              });
+            </pre>
+          </li>
+          <li>
+            <pre data-lang="lang-python" class="hidden">
+              <span class="code-comment">// Require the Wift library with a test secret key.</span>
+              import wift
+
+              charge = wift.Charge.create(request.form['wiftCharge'])
+
+              if charge.confirmed():
+              &nbsp;&nbsp;&nbsp;&nbsp;return render_template('thank_you.html')
+            </pre>
+          </li>
+      </div>
+    </div>
+    
+    <script src="main.js"></script>
+      
+  </body>
+</html>
