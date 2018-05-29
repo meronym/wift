@@ -3,7 +3,7 @@
     overflow: hidden;
     display: inline-block;
     visibility: visible !important;
-    background-image: linear-gradient(180deg, #F6C12D 0%, #F4AF29 100%);
+    background: linear-gradient(180deg, #6781B8 0%, #59719E 100%);
     border: 0;
     padding: 1px;
     text-decoration: none;
@@ -12,22 +12,31 @@
     cursor: pointer;
 }
 
+.wift-button-el:hover {
+    background: linear-gradient(180deg, #7593D1 0%, #6783B8 100%);
+}
+
+.wift-button-el:active {
+    background: linear-gradient(180deg, #536894 0%, #45577A 100%);
+    box-shadow: none;
+}
+
 .wift-button-el span {
     display: block;
     position: relative;
-    padding: 0 12px;
+    padding: 2px 14px;
     height: 30px;
     line-height: 30px;
     font-size: 14px;
     color: #fff;
     font-weight: bold;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
     text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
     border-radius: 4px;
 }
 
-.wift_checkout_app {
+.wift-checkout-app {
     z-index: 2147483647;
     display: none;
     background: rgba(0, 0, 0, 0.004) none repeat scroll 0% 0%;
