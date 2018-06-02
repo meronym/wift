@@ -6,6 +6,7 @@
   vars:
     root_dir: /srv/wift
     root_site: "{{ 'wift.local' if target == 'local' else 'wift.io' }}"
+    app_user: "{{ 'vagrant' if target == 'local' else 'wift' }}"
 
   tasks:
     - name: Add pipenv repository
@@ -60,8 +61,9 @@
         state: present
         create: yes
         line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
-        regexp: '^github\\.com'
-
+        regexp: "^github\\.com"
+      when: target != 'local'
+    
     - name: Clone the source code
       become_user: wift
       git:
@@ -77,9 +79,10 @@
         state: directory
         mode: 0755
 
-    - name: Link code repositories (local setup)
+    - name: Link code repositories
+      become_user: '{{ app_user }}'
       file:
-        src: '/vagrant/{{ item }}'
+        src: "{{ '/vagrant' if target == 'local' else '/home/wift/wift' }}/{{ item }}"
         dest: '{{ root_dir }}/{{ item }}'
         state: link
       with_items:
@@ -87,26 +90,12 @@
         - wift-checkout
         - wift-landing
         - wift-store
-      when: target == 'local'
-
-    - name: Link code repositories (production setup)
-      become_user: wift
-      file:
-        src: '/home/wift/wift/{{ item }}'
-        dest: '{{ root_dir }}/{{ item }}'
-        state: link
-      with_items:
-        - wift-api
-        - wift-checkout
-        - wift-landing
-        - wift-store
-      when: target != 'local'
 
     - name: Disable the default site
       file:
         path: "/etc/nginx/sites-enabled/default"
         state: absent
-      notify: reload nginx
+      notify: restart nginx
 
     - name: Setup Nginx configs files
       template:
@@ -117,7 +106,7 @@
         - wift-checkout.conf
         - wift-landing.conf
         - wift-store.conf
-      notify: reload nginx
+      notify: restart nginx
 
     - name: Enable Nginx sites
       file:
@@ -129,7 +118,7 @@
         - wift-landing.conf
         - wift-checkout.conf
         - wift-store.conf
-      notify: reload nginx
+      notify: restart nginx
 
     - name: Add enabled Nginx sites to /etc/hosts
       lineinfile:
@@ -166,30 +155,37 @@
     
     # Wift app dependencies via pipenv (gunicorn included)
     - name: Install wift-api requirements
-      become_user: wift
+      become_user: '{{ app_user }}'
       command: pipenv install chdir={{ root_dir }}/wift-api
+      tags: pipenv
 
     - name: Install wift-store requirements
-      become_user: wift
+      become_user: '{{ app_user }}'
       command: pipenv install chdir={{ root_dir }}/wift-store
-    
-    - name: Create supervisor log dir
+      tags: pipenv
+
+    - name: Create supervisor & app log dirs
       file:
-        dest: /var/log/supervisord/
+        dest: '{{ item }}'
         state: directory
+      with_items:
+        - /var/log/supervisor
+        - /var/log/wift
       notify: restart supervisord
+      when: target != 'local'
     
     - name: Configure supervisor
       template:
         src: supervisord.conf
-        dest: /etc/supervisord.conf
+        dest: /etc/supervisor/supervisord.conf
       notify: restart supervisord
+      when: target != 'local'
 
   handlers:
-    - name: reload nginx
+    - name: restart nginx
       service:
         name: nginx
-        state: reloaded
+        state: restarted
 
     - name: restart supervisord
       service:

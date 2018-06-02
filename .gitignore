@@ -1,5 +1,6 @@
 # Temporarily ignore Pipfile lock
 Pipfile.lock
+playbook.retry
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
