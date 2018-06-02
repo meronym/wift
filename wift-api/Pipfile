@@ -8,6 +8,7 @@ flask = "*"
 redis = "*"
 mongoengine = "*"
 qrcode = "*"
+gunicorn = "*"
 
 [dev-packages]
 pytest = "*"

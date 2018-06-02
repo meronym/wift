@@ -1,7 +1,7 @@
 # TODO: check out http://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html
 
 - hosts: all
-  become: false
+  become: yes
 
   vars:
     root_dir: /srv/wift
@@ -9,11 +9,9 @@
 
   tasks:
     - name: Add pipenv repository
-      become: true
       apt_repository: repo='ppa:pypa/ppa' state=present
 
     - name: Install core packages
-      become: true
       apt: update_cache=yes name={{ item }} state=present
       with_items:
         - software-properties-common
@@ -21,21 +19,20 @@
         - pipenv
     
     - name: Install dev utilities        
-      become: true
       apt: update_cache=yes name={{ item }} state=present
       with_items:
         - htop
         - git
         - vim
         - nginx
+        - supervisor
     
     - name: Create wift user
-      become: true
       user:
         name: wift
         groups: www-data
         state: present
-        createhome: true
+        createhome: yes
       when: target != 'local'
     
     - name: Add .ssh directory for the wift user
@@ -57,17 +54,15 @@
       when: target != 'local'
 
     - name: Ensure github.com is a known host
-      become: true
       become_user: wift
       lineinfile:
         dest: ~/.ssh/known_hosts
         state: present
-        create: true
+        create: yes
         line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
-        regexp: "^github\\.com"
+        regexp: '^github\\.com'
 
     - name: Clone the source code
-      become: true
       become_user: wift
       git:
         repo: git@github.com:meronym/wift.git
@@ -75,7 +70,6 @@
       when: target != 'local'
     
     - name: Create wift root directory
-      become: true
       file:
         path: '{{ root_dir }}'
         owner: "{{ 'vagrant' if target == 'local' else 'wift' }}"
@@ -83,9 +77,9 @@
         state: directory
         mode: 0755
 
-    - name: Link code repositories
+    - name: Link code repositories (local setup)
       file:
-        src: "/{{ 'vagrant' if target == 'local' else '/home/wift/wift' }}/{{ item }}"
+        src: '/vagrant/{{ item }}'
         dest: '{{ root_dir }}/{{ item }}'
         state: link
       with_items:
@@ -93,16 +87,28 @@
         - wift-checkout
         - wift-landing
         - wift-store
-    
+      when: target == 'local'
+
+    - name: Link code repositories (production setup)
+      become_user: wift
+      file:
+        src: '/home/wift/wift/{{ item }}'
+        dest: '{{ root_dir }}/{{ item }}'
+        state: link
+      with_items:
+        - wift-api
+        - wift-checkout
+        - wift-landing
+        - wift-store
+      when: target != 'local'
+
     - name: Disable the default site
-      become: true
       file:
         path: "/etc/nginx/sites-enabled/default"
         state: absent
       notify: reload nginx
 
     - name: Setup Nginx configs files
-      become: true
       template:
         src: 'nginx/{{ item }}'
         dest: '/etc/nginx/sites-available/{{ item }}'
@@ -114,7 +120,6 @@
       notify: reload nginx
 
     - name: Enable Nginx sites
-      become: true
       file:
         src: '/etc/nginx/sites-available/{{ item }}'
         dest: '/etc/nginx/sites-enabled/{{ item }}'
@@ -127,7 +132,6 @@
       notify: reload nginx
 
     - name: Add enabled Nginx sites to /etc/hosts
-      become: true
       lineinfile:
         dest: /etc/hosts
         line: '127.0.0.1 {{ item }}'
@@ -141,48 +145,53 @@
 
     # MongoDB section
     - name: Add MongoDB public GPG key
-      become: true
       apt_key:
         keyserver: hkp://keyserver.ubuntu.com:80
         id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
     
     - name: Add MongoDB stable repository
-      become: true
       apt_repository:
         repo: 'deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse'
         state: present
 
     - name: Install MongoDB
-      become: true
       apt: update_cache=yes name=mongodb-org state=present
 
     - name: Start MongoDB and enable automatic launch at system start
-      become: true
       service: name=mongod state=started enabled=yes
-
-    # Redis section
+    
+    # Redis
     - name: Install Redis
-      become: true
       apt: name=redis-server state=present
+    
+    # Wift app dependencies via pipenv (gunicorn included)
+    - name: Install wift-api requirements
+      become_user: wift
+      command: pipenv install chdir={{ root_dir }}/wift-api
 
-    # - name: Set default locale to utf8 (prevents pipenv from being a bitch)
-    #   become: true
-    #   template:
-    #     src: locale.j2
-    #     dest: /etc/default/locale
-    #     owner: root
-    #     group: root
-    #     mode: 0644
-
-    # - name: Install wift-api requirements
-    #   command: pipenv install chdir={{ root_dir }}/wift-api
-
-    # - name: Install wift-store requirements
-    #   command: pipenv install chdir={{ root_dir }}/wift-store
+    - name: Install wift-store requirements
+      become_user: wift
+      command: pipenv install chdir={{ root_dir }}/wift-store
+    
+    - name: Create supervisor log dir
+      file:
+        dest: /var/log/supervisord/
+        state: directory
+      notify: restart supervisord
+    
+    - name: Configure supervisor
+      template:
+        src: supervisord.conf
+        dest: /etc/supervisord.conf
+      notify: restart supervisord
 
   handlers:
     - name: reload nginx
-      become: true
       service:
         name: nginx
         state: reloaded
+
+    - name: restart supervisord
+      service:
+        name: supervisor
+        state: restarted
