@@ -8,6 +8,8 @@ from flask import Flask, render_template, redirect, request, abort
 
 app = Flask(__name__)
 
+db.connect('wiftstore')
+
 
 class Purchase(db.Document):
     charge_id = db.StringField(required=True, unique=True)
@@ -46,7 +48,5 @@ def opened(user_id):
 if __name__ == '__main__':
     import os
     os.environ['FLASK_ENV'] = 'development'
-    
-    db.connect('wiftstore')
     
     app.run(port=8002)
