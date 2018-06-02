@@ -21,6 +21,14 @@ from lib.wallets import WatchWallet
 app = Flask(__name__)
 
 
+with open('config.json') as f:
+    config = json.loads(f.read())
+
+wallet = WatchWallet(config['xpub'])
+redis = StrictRedis()
+db.connect('wiftdemo')
+
+
 class Charge(db.Document):
     cid = db.StringField(required=True, unique=True)
     index = db.IntField(required=True, unique=True)
@@ -77,6 +85,14 @@ def charge_details(cid):
         'uri': ch.uri,
         'status': ch.status,
     }
+
+    # import json
+    # from web3 import Web3, HTTPProvider
+
+    # w3 = Web3(HTTPProvider('https://kovan.infura.io/dzd63pITwjn1tg7TjkZV'))
+    # dai = w3.eth.contract('0xc4375b7de8af5a38a93548eb8453a498222c4ff2', abi)
+    # print(dai.call().balanceOf('0x6F2A8Ee9452ba7d336b3fba03caC27f7818AeAD6'))
+
     return jsonify(resp)
 
 
@@ -101,22 +117,8 @@ def set_cors(response):
     return response
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':    
     import os
     os.environ['FLASK_ENV'] = 'development'
 
-    with open('config.json') as f:
-        config = json.loads(f.read())
-    
-    wallet = WatchWallet(config['xpub'])
-    redis = StrictRedis()
-    db.connect('wiftdemo')
-    
-    # import json
-    # from web3 import Web3, HTTPProvider
-
-    # w3 = Web3(HTTPProvider('https://kovan.infura.io/dzd63pITwjn1tg7TjkZV'))
-    # dai = w3.eth.contract('0xc4375b7de8af5a38a93548eb8453a498222c4ff2', abi)
-    # print(dai.call().balanceOf('0x6F2A8Ee9452ba7d336b3fba03caC27f7818AeAD6'))
-    
     app.run(port=8001)
