@@ -127,7 +127,7 @@
           if (data.status === 'payed') {
             console.log('$$$ was payed!');
             showConfirmation();
-            setTimeout(complete, 3400);
+            setTimeout(complete, 5400);
           } else {
             console.log('still not payed');
             interval = setTimeout(checkPayment, 1000);

@@ -514,7 +514,7 @@ button.close:hover svg {
   width: 0px;
   height: 2px;
   background: #7C9AD6;
-  transition: width 2.4s linear 0.8s;
+  transition: width 4.4s linear 0.8s;
 }
 
 .action-loader.active {

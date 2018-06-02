@@ -5,7 +5,7 @@
 
   vars:
     root_dir: /srv/wift
-    root_site: wift.local
+    root_site: "{{ 'wift.local' if target == 'local' else 'wift.io' }}"
 
   tasks:
     - name: Add pipenv repository
@@ -28,19 +28,64 @@
         - git
         - vim
         - nginx
+    
+    - name: Create wift user
+      become: true
+      user:
+        name: wift
+        groups: www-data
+        state: present
+        createhome: true
+      when: target != 'local'
+    
+    - name: Add .ssh directory for the wift user
+      file:
+        path: /home/wift/.ssh
+        state: directory
+        mode: 0700
+        owner: wift
+        group: wift
+      when: target != 'local'
+    
+    - name: Copy wift app user ssh key
+      copy:
+        src: secrets/wift_demo
+        dest: /home/wift/.ssh/id_ed25519
+        owner: wift
+        group: wift
+        mode: 0700
+      when: target != 'local'
 
+    - name: Ensure github.com is a known host
+      become: true
+      become_user: wift
+      lineinfile:
+        dest: ~/.ssh/known_hosts
+        state: present
+        create: true
+        line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+        regexp: "^github\\.com"
+
+    - name: Clone the source code
+      become: true
+      become_user: wift
+      git:
+        repo: git@github.com:meronym/wift.git
+        dest: /home/wift/wift
+      when: target != 'local'
+    
     - name: Create wift root directory
       become: true
       file:
         path: '{{ root_dir }}'
-        owner: vagrant
+        owner: "{{ 'vagrant' if target == 'local' else 'wift' }}"
         group: www-data
         state: directory
         mode: 0755
 
     - name: Link code repositories
       file:
-        src: '/vagrant/{{ item }}'
+        src: "/{{ 'vagrant' if target == 'local' else '/home/wift/wift' }}/{{ item }}"
         dest: '{{ root_dir }}/{{ item }}'
         state: link
       with_items:
@@ -48,7 +93,7 @@
         - wift-checkout
         - wift-landing
         - wift-store
-
+    
     - name: Disable the default site
       become: true
       file:
