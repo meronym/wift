@@ -178,19 +178,4 @@
     }
   })
 
-  // show loading screen
-
-  // retrieve payment details
-  // fetch('http://api.wift.local/v1/charge/1234', {'mode': 'cors'})
-  //     .then(r => r.json())
-  //     .then(data => {
-  //         console.log(data);
-  //     });
-
-  // overlay.classList.add('faded');
-  // main.style.display = 'none';
-  // setTimeout(() => {
-  //   overlay.classList.remove('faded');
-  //   document.querySelector('.spinner').classList.add('active');
-  // }, 1000);
 })();

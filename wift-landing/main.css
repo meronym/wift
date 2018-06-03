@@ -586,7 +586,7 @@ div.console-header > div.console-cta > button.view-docs {
 }
 
 .console pre.hidden {
-    opacity: 0.001;
+    opacity: 0;
 }
 
 .console pre span.code-comment {
