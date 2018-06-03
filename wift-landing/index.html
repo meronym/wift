@@ -99,27 +99,14 @@
           </li>
           <li>
             <pre data-lang="lang-js" class="hidden">
-              <span class="code-comment">// Require the Wift library with a test secret key.</span>
-              <span class="code-keyword">const</span> wift = require(<span class="code-string">'wift'</span>)(<span class="code-string">'sk_test_BQokikJOvBiI2HlWgH4olfQ2'</span>);
-
-              <span class="code-comment">// Create a payment from a test card token.</span>
-              <span class="code-keyword">const</span> charge = <span class="code-keyword">await</span> wift.charges.create({
-              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">amount</span>: 2000,
-              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">currency</span>: <span class="code-string">'usd'</span>,
-              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">source</span>: <span class="code-string">'tok_visa'</span>,
-              &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">description</span>: <span class="code-string">'My first payment'</span>
-              });
+              <span class="code-comment">// Server-side code to process the charge</span>
+              <span class="code-comment">// Example coming soon</span>
             </pre>
           </li>
           <li>
             <pre data-lang="lang-python" class="hidden">
-              <span class="code-comment">// Require the Wift library with a test secret key.</span>
-              import wift
-
-              charge = wift.Charge.create(request.form['wiftCharge'])
-
-              if charge.confirmed():
-              &nbsp;&nbsp;&nbsp;&nbsp;return render_template('thank_you.html')
+              <span class="code-comment"># Server-side code to process the charge</span>
+              <span class="code-comment"># Example coming soon</span>
             </pre>
           </li>
       </div>
