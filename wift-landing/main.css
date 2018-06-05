@@ -17,6 +17,7 @@ body {
     background-image: url('bkg-gradient.svg');
     background-position-y: -42px;
     background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .wrapper {
@@ -565,7 +566,7 @@ div.console-header > div.console-cta > button.view-docs {
     background: rgba(56, 153, 237, 0.03);
     box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.05);
     border-radius: 4px;
-    min-height: 300px;
+    min-height: 260px;
 }
 
 .console pre {
@@ -605,4 +606,32 @@ div.console-header > div.console-cta > button.view-docs {
 
 .console pre span.code-string {
     color: #50D4D3;
+}
+
+.contact > a,
+.contact > a:visited {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    
+    margin-top: 24px;
+    font-weight: 500;
+    line-height: normal;
+    font-size: 16px;
+    color: rgba(247, 249, 249, 1);
+    
+    opacity: 0.6;
+    transform: none;
+    transition: transform .2s ease-in-out, opacity .2s ease-in;
+}
+
+.contact > a:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.contact > a:active {
+    opacity: 0.8;
+    transform: none;
 }
