@@ -98,6 +98,7 @@ def charge_details(cid):
 
 @app.route('/demo/charge/<string:cid>/skip')
 def skip_payment(cid):
+    # FIXME WARNING This should only live in test mode
     ch = Charge.objects.get(cid=cid)
     ch.status = 'payed'
     ch.save()
