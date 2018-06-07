@@ -16,6 +16,7 @@ from flask import Flask, request, jsonify, make_response
 from redis import StrictRedis
 
 from lib.wallets import WatchWallet
+from lib.contracts import get_erc20_balance
 
 
 app = Flask(__name__)
@@ -38,6 +39,16 @@ class Charge(db.Document):
     status = db.StringField()
     created_at = db.DateTimeField(default=datetime.datetime.utcnow)
     queried_at = db.DateTimeField(default=datetime.datetime.utcnow)
+
+    def check_status(self):
+        balance = get_erc20_balance(config['provider'], config['token'], self.address)
+        if balance >= self.amount * 10**16:
+            self.status = 'payed'
+
+    # def check_status(self):
+    #     now = datetime.datetime.utcnow()
+    #     if now - self.created_at > datetime.timedelta(seconds=5):
+    #         self.status = 'payed'
 
 
 @app.route('/demo/charge', methods=['POST'])
@@ -71,13 +82,10 @@ def new_charge():
 @app.route('/demo/charge/<string:cid>')
 def charge_details(cid):
     ch = Charge.objects.get(cid=cid)
-
-    now = datetime.datetime.utcnow()
-    if now - ch.created_at > datetime.timedelta(seconds=5):
-        ch.status = 'payed'    
-    ch.queried_at = now
+    ch.queried_at = datetime.datetime.utcnow()
+    ch.check_status()
     ch.save()
-    
+
     resp = {
         'id': ch.cid,
         'address': ch.address,
@@ -85,17 +93,17 @@ def charge_details(cid):
         'uri': ch.uri,
         'status': ch.status,
     }
-
-    # import json
-    # from web3 import Web3, HTTPProvider
-
-    # w3 = Web3(HTTPProvider('https://kovan.infura.io/dzd63pITwjn1tg7TjkZV'))
-    # dai = w3.eth.contract('0xc4375b7de8af5a38a93548eb8453a498222c4ff2', abi)
-    # print(dai.call().balanceOf('0x6F2A8Ee9452ba7d336b3fba03caC27f7818AeAD6'))
-
     return jsonify(resp)
 
 
+@app.route('/demo/charge/<string:cid>/skip')
+def skip_payment(cid):
+    ch = Charge.objects.get(cid=cid)
+    ch.status = 'payed'
+    ch.save()
+    return jsonify("charge manually confirmed")
+
+    
 @app.route('/demo/qr/<string:cid>')
 def qr(cid):
     ch = Charge.objects.get(cid=cid)

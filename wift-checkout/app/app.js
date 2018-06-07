@@ -2,16 +2,16 @@
   const overlay = document.querySelector('.overlay');
   const main = document.querySelector('.main');
   const spinner = document.querySelector('.spinner');
-  const testAlert = document.querySelector('.test-alert');
+  const infoBox = document.querySelector('.infobox');
   
   function showLoading() {
     overlay.style.display = 'none';
     main.style.display = 'none';
-    testAlert.style.display = 'none';
+    infoBox.style.display = 'none';
 
     overlay.classList.add('faded');
     main.classList.add('faded');
-    testAlert.classList.add('faded');
+    infoBox.classList.add('faded');
     spinner.classList.remove('active');
 
     document.querySelector('#scan-qr').classList.remove('hidden');
@@ -25,7 +25,7 @@
 
     overlay.style.display = 'flex';
     main.style.display = 'flex';
-    testAlert.style.display = 'block';
+    infoBox.style.display = 'flex';
 
     setTimeout(() => {
       overlay.classList.remove('faded');
@@ -40,7 +40,7 @@
     setTimeout(() => {
       overlay.classList.remove('faded');
       main.classList.remove('faded');  
-      testAlert.classList.remove('faded');
+      infoBox.classList.remove('faded');
       spinner.classList.remove('active');
     }, 600);
   }
@@ -118,7 +118,7 @@
     document.querySelector('#open-wallet').href = data.uri;
     document.querySelector('.box-qr > img').src = '//api.wift.local/demo/qr/' + data.charge;
 
-    let interval = setTimeout(checkPayment, 1000);
+    let interval = setTimeout(checkPayment, 1500);
 
     function checkPayment() {
       fetch(`http://api.wift.local/demo/charge/${data.charge}`)
@@ -130,12 +130,12 @@
             setTimeout(complete, 5400);
           } else {
             console.log('still not payed');
-            interval = setTimeout(checkPayment, 1000);
+            interval = setTimeout(checkPayment, 1500);
           }
         })
         .catch((err) => {
           console.log('got error:', err);
-          interval = setTimeout(checkPayment, 2000);
+          interval = setTimeout(checkPayment, 3000);
         });
     }
     
@@ -146,13 +146,17 @@
     document.querySelector('button.close').onclick = function() {
       pauseChecking();
       overlay.classList.add('faded');
-      testAlert.classList.add('faded');
+      infoBox.classList.add('faded');
       main.classList.add('faded');
       setTimeout(() => {
         const parent = window.parent;
         parent.postMessage({'type': 'wift-rpc', 'action': 'close'}, '*');
       }, 400);
     }  
+
+    document.querySelector('button.skip-payment').onclick = function() {
+      fetch(`http://api.wift.local/demo/charge/${data.charge}/skip`);
+    }
   }
 
   window.addEventListener('load', function() {

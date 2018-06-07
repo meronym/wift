@@ -3,5 +3,6 @@
     "token": "0xc4375b7de8af5a38a93548eb8453a498222c4ff2",
     "chain": 42,
     "xprv": "tprv8ZgxMBicQKsPe1zWSikztnR5hKEpq7NZwmmjSDotzYcVwJtwtVFynNkPmLe1q7ragzUpb9WbJCZMou2czbkBQGYja9EDGwJC9bjedGbdqvw",
-    "xpub": "tpubD6NzVbkrYhZ4XV2JLNRbJC5CGLkkzSZUX5NWijrCQpQtmo9iWt5ZxsNFwVAa6feaL2xbg2oHyd1cJgfHPQiM5cncnoju2R1y4LZLDcs5oyS"
+    "xpub": "tpubD6NzVbkrYhZ4XV2JLNRbJC5CGLkkzSZUX5NWijrCQpQtmo9iWt5ZxsNFwVAa6feaL2xbg2oHyd1cJgfHPQiM5cncnoju2R1y4LZLDcs5oyS",
+    "provider": "https://kovan.infura.io/dzd63pITwjn1tg7TjkZV"
 }

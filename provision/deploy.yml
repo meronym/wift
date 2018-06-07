@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+    - name: Clone the source code
+      become_user: wift
+      git:
+        repo: git@github.com:meronym/wift.git
+        dest: /home/wift/wift
+        force: yes
+      when: target != 'local'
+    
+    - name: (HACK) Replace the urls in source files
+      command: python build.py
+      args:
+        chdir: /home/wift/wift
+      when: target != 'local'

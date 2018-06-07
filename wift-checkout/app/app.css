@@ -30,29 +30,56 @@
   background: rgba(0, 0, 0, 0);
 }
 
-.test-alert {
+.overlay > .infobox {
   position: fixed;
   top: 12px;
   right: 12px;
   height: 26px;
-  line-height: 26px;
-  padding: 0 10px;
 
   font-size: 12px;
   font-weight: 600;
+  text-transform: uppercase;
   color: #242C3B;
-  text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.42);
 
-  background: rgba(245, 204, 20, 1);
-  border-radius: 4px;
-  border: 2px solid rgba(255, 235, 148, 0.3);
+  display: flex;
+  box-sizing: border-box;
 
   opacity: 1;
   transition: opacity .4s ease;
 }
 
-.test-alert.faded {
+.infobox.faded {
   opacity: 0;
+}
+
+.test-alert {
+  padding: 0 10px;
+  line-height: 20px;
+  border-radius: 4px;
+  border: 2px solid rgba(255, 235, 148, 0.3);
+  text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.42);
+  background: rgba(245, 204, 20, 1);
+}
+
+.skip-payment {
+  padding: 0 10px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: #F7F8FB;
+  margin-right: 10px;
+  border: none;
+  color: #47536B;
+  cursor: pointer;
+  transition: background .2s ease-in;
+}
+
+.skip-payment:hover {
+  background: #EAEDF4;
+}
+
+.skip-payment:active {
+  background: #D4DBE8;
 }
 
 .spinner {

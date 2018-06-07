@@ -1,3 +1,5 @@
+*.code-workspace
+
 # Temporarily ignore Pipfile lock
 Pipfile.lock
 playbook.retry
