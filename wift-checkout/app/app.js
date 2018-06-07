@@ -154,8 +154,15 @@
       }, 400);
     }  
 
-    document.querySelector('button.skip-payment').onclick = function() {
-      fetch(`http://api.wift.local/demo/charge/${data.charge}/skip`);
+    const skipBtn = document.querySelector('button.skip-payment');
+
+    skipBtn.onclick = function(e) {
+      skipBtn.innerHTML = 'Skipping...';
+      fetch(`http://api.wift.local/demo/charge/${data.charge}/skip`)
+      .catch((err) => {
+        console.log(err);
+        skipBtn.innerHTML = "Couldn't skip";
+      })
     }
   }
 

@@ -9,10 +9,16 @@
         repo: git@github.com:meronym/wift.git
         dest: /home/wift/wift
         force: yes
-      when: target != 'local'
     
     - name: (HACK) Replace the urls in source files
       command: python build.py
       args:
         chdir: /home/wift/wift
-      when: target != 'local'
+
+    - name: restart supervisord
+      command: supervisorctl restart wift:*
+
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
