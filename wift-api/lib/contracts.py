@@ -39,7 +39,7 @@ def get_erc20_balance(provider, contract, account):
         headers={'Content-Type': 'application/json'}
     )
     
-    with urllib.request.urlopen(req) as r:
+    with urllib.request.urlopen(req, timeout=3) as r:
         response = json.loads(r.read().decode('utf-8'))
     
     return int(response['result'], 16)
